@@ -21,6 +21,11 @@ router.post("/teste", (request, response) => {
   return response.status(StatusCodes.OK).json(request.body);
 });
 
-router.post("/cidades", CidadesController.create);
+router.post(
+  "/cidades",
+  CidadesController.createBodyValidator,
+  CidadesController.createQueryValidator,
+  CidadesController.create,
+);
 
 export { router };
