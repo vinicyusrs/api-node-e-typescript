@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 
 import * as yup from "yup";
 import { validation } from "../../shared/middleware";
+import { StatusCodes } from "http-status-codes";
 
 interface ICidade {
   nome: string;
@@ -34,5 +35,5 @@ export const create = async (req: Request<{}, {}, ICidade>, res: Response) => {
   }
    */
   console.log(req.body);
-  return res.send("Create");
+  return res.status(StatusCodes.CREATED).json(1);
 };
