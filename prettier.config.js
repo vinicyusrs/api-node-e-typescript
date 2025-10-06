@@ -3,4 +3,5 @@ export default {
   semi: true,
   tabWidth: 2,
   endOfLine: "lf",
+  printWidth: 300,
 };

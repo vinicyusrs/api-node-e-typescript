@@ -3,19 +3,17 @@ import { Request, Response } from "express";
 import * as yup from "yup";
 import { validation } from "../../shared/middleware";
 
-interface ICidade {
-  nome: string;
-}
-
-interface IFilter {
+interface IQueryProps {
+  page?: number;
+  limite?: number;
   filter?: string;
-  //limit?: number;
 }
-
-export const createValidation = validation((getObjetcSchema) => ({
-  body: getObjetcSchema<ICidade>(
+export const getAllValidation = validation((getObjetcSchema) => ({
+  query: getObjetcSchema<IQueryProps>(
     yup.object().shape({
-      nome: yup.string().required().min(3),
+      page: yup.number().optional().moreThan(0),
+      limite: yup.number().optional().moreThan(0),
+      filter: yup.string().optional(),
     }),
   ),
   /*   query: getObjetcSchema<IFilter>(
@@ -26,13 +24,14 @@ export const createValidation = validation((getObjetcSchema) => ({
 }));
 
 // da para usar RequestHandler aqui tambem
-export const create = async (req: Request<{}, {}, ICidade>, res: Response) => {
-  const data = req.body.nome;
-
+export const getAll = async (
+  req: Request<{}, {}, {}, IQueryProps>,
+  res: Response,
+) => {
   /*   if (req.body.nome === undefined) {
     return res.status(StatusCodes.BAD_REQUEST).send("Informe o atributo nome");
   }
    */
-  console.log(req.body);
-  return res.send("Create");
+  console.log(req.query);
+  return res.send("GetAll");
 };
