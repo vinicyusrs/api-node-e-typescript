@@ -1,39 +1,31 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import * as yup from 'yup';
 
-import * as yup from "yup";
-import { validation } from "../../shared/middleware";
-import { StatusCodes } from "http-status-codes";
+import { CidadesProvider } from '../../database/providers/cidades';
+import { validation } from '../../shared/middleware';
+import { ICidade } from '../../database/models';
 
-interface ICidade {
-  nome: string;
-}
+interface IBodyProps extends Omit<ICidade, 'id'> {}
 
-interface IFilter {
-  filter?: string;
-  //limit?: number;
-}
-
-export const createValidation = validation((getObjetcSchema) => ({
-  body: getObjetcSchema<ICidade>(
+export const createValidation = validation((getSchema) => ({
+  body: getSchema<IBodyProps>(
     yup.object().shape({
-      nome: yup.string().required().min(3),
+      nome: yup.string().required().min(3).max(150),
     }),
   ),
-  /*   query: getObjetcSchema<IFilter>(
-    yup.object().shape({
-      filter: yup.string().optional().min(3),
-    }),
-   ),*/
 }));
 
-// da para usar RequestHandler aqui tambem
 export const create = async (req: Request<{}, {}, ICidade>, res: Response) => {
-  const data = req.body.nome;
+  const result = await CidadesProvider.create(req.body);
 
-  /*   if (req.body.nome === undefined) {
-    return res.status(StatusCodes.BAD_REQUEST).send("Informe o atributo nome");
+  if (result instanceof Error) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      errors: {
+        default: result.message,
+      },
+    });
   }
-   */
-  console.log(req.body);
-  return res.status(StatusCodes.CREATED).json(1);
+
+  return res.status(StatusCodes.CREATED).json(result);
 };
