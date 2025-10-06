@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 
 import * as yup from "yup";
 import { validation } from "../../shared/middleware";
+import { StatusCodes } from "http-status-codes";
 
 interface IQueryProps {
   page?: number;
@@ -32,6 +33,13 @@ export const getAll = async (
     return res.status(StatusCodes.BAD_REQUEST).send("Informe o atributo nome");
   }
    */
-  console.log(req.query);
-  return res.send("GetAll");
+  res.setHeader("access-control-expose-headers", "x-total-count");
+  res.setHeader("x-total-count", 1);
+
+  return res.status(StatusCodes.OK).json([
+    {
+      id: 1,
+      nome: "Caxias do Sul",
+    },
+  ]);
 };
